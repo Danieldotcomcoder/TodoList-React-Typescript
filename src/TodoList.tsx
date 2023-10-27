@@ -4,6 +4,7 @@ import { Todo } from './type';
 const TodoList: React.FC = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [value, setValue] = useState("");
+    const [searchValue, setSearchValue] = useState("");
   
     const addTodo: (text: string) => void = (text) => {
       const newTodos = [...todos, { text, complete: false }];
@@ -26,15 +27,21 @@ const TodoList: React.FC = () => {
           />
           <button type="submit">Add Todo</button>
         </form>
-        {todos.map((todo, i) => (
-          <div key={i}>
-            <span style={{ textDecoration: todo.complete ? 'line-through' : undefined }}>
-              {todo.text}
-            </span>
-          </div>
-        ))}
+        <input
+          type="text"
+          placeholder="Search..."
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+        {todos
+          .filter((todo) => todo.text.includes(searchValue))
+          .map((todo, i) => (
+            <div key={i}>
+              <span style={{ textDecoration: todo.complete ? 'line-through' : undefined }}>
+                {todo.text}
+              </span>
+            </div>
+          ))}
       </div>
     );
   };
-  
   export default TodoList;
