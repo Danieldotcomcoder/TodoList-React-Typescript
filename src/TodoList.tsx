@@ -18,6 +18,10 @@ const TodoList: React.FC = () => {
     setValue('');
   };
 
+  const handleCopy: (text: string) => void = (text) => {
+    copy(text);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -44,6 +48,7 @@ const TodoList: React.FC = () => {
             >
               {todo.text}
             </span>
+            <button onClick={() => handleCopy(todo.text)}>Copy</button>
           </div>
         ))}
     </div>
