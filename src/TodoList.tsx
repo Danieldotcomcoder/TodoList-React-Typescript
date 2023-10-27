@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
-import { Todo } from './type';
+import React, { useState, useEffect } from 'react';
 import copy from 'clipboard-copy';
 
+type Todo = {
+  text: string;
+  category: string;
+  complete: boolean;
+};
+
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [value, setValue] = useState('');
-  const [searchValue, setSearchValue] = useState('');
   const [category, setCategory] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   const categories = ['Home', 'Work', 'Learning', 'Personal', 'Urgent'];
 
+  useEffect(() => {
+    if (todos.length === 0) {
+      const loadedTodos = loadTodos();
+      setTodos(loadedTodos);
+    } else {
+      saveTodos(todos);
+    }
+  }, [todos]);
+  
   const addTodo: (text: string, category: string) => void = (
     text,
     category
@@ -28,6 +42,16 @@ const TodoList: React.FC = () => {
   const handleCopy: (text: string) => void = (text) => {
     copy(text);
   };
+
+  const saveTodos = (todos: Todo[]) => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  };
+  
+  const loadTodos = (): Todo[] => {
+    const todos = localStorage.getItem('todos');
+    return todos ? JSON.parse(todos) : [];
+  };
+  
 
   return (
     <div>
@@ -58,7 +82,7 @@ const TodoList: React.FC = () => {
         placeholder="Search..."
         onChange={(e) => setSearchValue(e.target.value)}
       />
-      {todos.map((todo, i) => (
+      {todos.filter((todo) => todo.text.includes(searchValue)).map((todo, i) => (
         <div key={i}>
           <span
             style={{
