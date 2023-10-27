@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import copy from 'clipboard-copy';
+import { v4 as uuidv4 } from 'uuid';
 
 type Todo = {
+  id: string;
   text: string;
   category: string;
   complete: boolean;
@@ -15,20 +17,11 @@ const TodoList: React.FC = () => {
 
   const categories = ['Home', 'Work', 'Learning', 'Personal', 'Urgent'];
 
-  useEffect(() => {
-    if (todos.length === 0) {
-      const loadedTodos = loadTodos();
-      setTodos(loadedTodos);
-    } else {
-      saveTodos(todos);
-    }
-  }, [todos]);
-  
   const addTodo: (text: string, category: string) => void = (
     text,
     category
   ) => {
-    const newTodos = [...todos, { text, category, complete: false }];
+    const newTodos = [...todos, { id: uuidv4(), text, category, complete: false }];
     setTodos(newTodos);
   };
 
@@ -46,12 +39,34 @@ const TodoList: React.FC = () => {
   const saveTodos = (todos: Todo[]) => {
     localStorage.setItem('todos', JSON.stringify(todos));
   };
-  
+
   const loadTodos = (): Todo[] => {
     const todos = localStorage.getItem('todos');
     return todos ? JSON.parse(todos) : [];
   };
-  
+
+  const handleComplete: (id: string) => void = (id) => {
+    const newTodos = todos.map(todo =>
+      todo.id === id ? { ...todo, complete: !todo.complete } : todo
+    );
+    setTodos(newTodos);
+  };
+
+  const handleDelete: (id: string) => void = (id) => {
+    const newTodos = todos.filter(todo => todo.id !== id);
+    setTodos(newTodos);
+  };
+
+  useEffect(() => {
+    const loadedTodos = loadTodos();
+    if (loadedTodos.length > 0) {
+      setTodos(loadedTodos);
+    }
+  }, []); 
+
+  useEffect(() => {
+    saveTodos(todos);
+  }, [todos]); 
 
   return (
     <div>
@@ -82,8 +97,13 @@ const TodoList: React.FC = () => {
         placeholder="Search..."
         onChange={(e) => setSearchValue(e.target.value)}
       />
-      {todos.filter((todo) => todo.text.includes(searchValue)).map((todo, i) => (
-        <div key={i}>
+      {todos.filter(todo => todo.text.includes(searchValue)).map((todo) => (
+        <div key={todo.id}>
+          <input
+            type="checkbox"
+            checked={todo.complete}
+            onChange={() => handleComplete(todo.id)}
+          />
           <span
             style={{
               textDecoration: todo.complete ? 'line-through' : undefined,
@@ -92,6 +112,7 @@ const TodoList: React.FC = () => {
             {todo.text} ({todo.category})
           </span>
           <button onClick={() => handleCopy(todo.text)}>Copy</button>
+          <button onClick={() => handleDelete(todo.id)}>Delete</button>
         </div>
       ))}
     </div>
