@@ -6,16 +6,23 @@ const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [value, setValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [category, setCategory] = useState('');
 
-  const addTodo: (text: string) => void = (text) => {
-    const newTodos = [...todos, { text, complete: false }];
+  const categories = ['Home', 'Work', 'Learning', 'Personal', 'Urgent'];
+
+  const addTodo: (text: string, category: string) => void = (
+    text,
+    category
+  ) => {
+    const newTodos = [...todos, { text, category, complete: false }];
     setTodos(newTodos);
   };
 
   const handleSubmit: (event: React.FormEvent) => void = (event) => {
     event.preventDefault();
-    addTodo(value);
+    addTodo(value, category);
     setValue('');
+    setCategory('');
   };
 
   const handleCopy: (text: string) => void = (text) => {
@@ -29,7 +36,16 @@ const TodoList: React.FC = () => {
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          placeholder="Todo"
         />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="">Select category</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
         <button type="submit">Add Todo</button>
       </form>
       <input
@@ -37,20 +53,18 @@ const TodoList: React.FC = () => {
         placeholder="Search..."
         onChange={(e) => setSearchValue(e.target.value)}
       />
-      {todos
-        .filter((todo) => todo.text.includes(searchValue))
-        .map((todo, i) => (
-          <div key={i}>
-            <span
-              style={{
-                textDecoration: todo.complete ? 'line-through' : undefined,
-              }}
-            >
-              {todo.text}
-            </span>
-            <button onClick={() => handleCopy(todo.text)}>Copy</button>
-          </div>
-        ))}
+      {todos.map((todo, i) => (
+        <div key={i}>
+          <span
+            style={{
+              textDecoration: todo.complete ? 'line-through' : undefined,
+            }}
+          >
+            {todo.text} ({todo.category})
+          </span>
+          <button onClick={() => handleCopy(todo.text)}>Copy</button>
+        </div>
+      ))}
     </div>
   );
 };
