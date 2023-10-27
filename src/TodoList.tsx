@@ -38,7 +38,12 @@ const TodoList: React.FC = () => {
           onChange={(e) => setValue(e.target.value)}
           placeholder="Todo"
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <label htmlFor="category">Category</label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
           <option value="">Select category</option>
           {categories.map((category) => (
             <option key={category} value={category}>
