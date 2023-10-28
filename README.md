@@ -9,6 +9,10 @@ This is a simple Todo List application built with React and TypeScript.
 - Copy todo text to clipboard
 - Todos persist across browser sessions using `localStorage`
 
+## Live Demo
+
+https://todo-list-react-typescript-pied.vercel.app/
+
 ## Installation
 
 First, clone the repository:
