@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import copy from 'clipboard-copy';
 import { v4 as uuidv4 } from 'uuid';
+import paste from './assets/paste.png'
+import remove from './assets/delete.png'
+
+import './App.css';
 
 type Todo = {
   id: string;
@@ -11,17 +15,20 @@ type Todo = {
 
 const TodoList: React.FC = () => {
   const [value, setValue] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('Normal');
   const [searchValue, setSearchValue] = useState('');
   const [todos, setTodos] = useState<Todo[]>([]);
 
-  const categories = ['Home', 'Work', 'Learning', 'Personal', 'Urgent'];
+  const categories = ['Normal', 'Home', 'Work', 'Learning', 'Personal', 'Urgent'];
 
   const addTodo: (text: string, category: string) => void = (
     text,
     category
   ) => {
-    const newTodos = [...todos, { id: uuidv4(), text, category, complete: false }];
+    const newTodos = [
+      ...todos,
+      { id: uuidv4(), text, category, complete: false },
+    ];
     setTodos(newTodos);
   };
 
@@ -29,7 +36,7 @@ const TodoList: React.FC = () => {
     event.preventDefault();
     addTodo(value, category);
     setValue('');
-    setCategory('');
+    setCategory('Normal');
   };
 
   const handleCopy: (text: string) => void = (text) => {
@@ -46,14 +53,14 @@ const TodoList: React.FC = () => {
   };
 
   const handleComplete: (id: string) => void = (id) => {
-    const newTodos = todos.map(todo =>
+    const newTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, complete: !todo.complete } : todo
     );
     setTodos(newTodos);
   };
 
   const handleDelete: (id: string) => void = (id) => {
-    const newTodos = todos.filter(todo => todo.id !== id);
+    const newTodos = todos.filter((todo) => todo.id !== id);
     setTodos(newTodos);
   };
 
@@ -62,59 +69,89 @@ const TodoList: React.FC = () => {
     if (loadedTodos.length > 0) {
       setTodos(loadedTodos);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     saveTodos(todos);
-  }, [todos]); 
+  }, [todos]);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Todo"
-        />
-        <label htmlFor="category">Category</label>
+    <div className="app">
+      <div className="header">
+        <h1>TODO List</h1>
+      </div>
+      <input
+        className="search-input"
+        type="text"
+        placeholder="Search..."
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="input">
+          <input
+            className="todo-input"
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="Add Your Todo Here ...."
+          />
+          <button className="submit-button" type="submit">
+            Add
+          </button>
+        </div>
+
+       
         <select
           id="category"
+          className="select-category"
           value={category}
+          
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="">Select category</option>
+          <option>Select Category</option>
           {categories.map((category) => (
             <option key={category} value={category}>
               {category}
             </option>
           ))}
         </select>
-        <button type="submit">Add Todo</button>
       </form>
-      <input
-        type="text"
-        placeholder="Search..."
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
-      {todos.filter(todo => todo.text.includes(searchValue)).map((todo) => (
-        <div key={todo.id}>
-          <input
-            type="checkbox"
-            checked={todo.complete}
-            onChange={() => handleComplete(todo.id)}
-          />
-          <span
-            style={{
-              textDecoration: todo.complete ? 'line-through' : undefined,
-            }}
-          >
-            {todo.text} ({todo.category})
-          </span>
-          <button onClick={() => handleCopy(todo.text)}>Copy</button>
-          <button onClick={() => handleDelete(todo.id)}>Delete</button>
-        </div>
-      ))}
+      <div>
+        {todos
+          .filter((todo) => todo.text.toLowerCase().includes(searchValue.toLowerCase()))
+          .map((todo) => (
+            <div key={todo.id} className="todo-item">
+              <div className='todo-item-details'>
+                <input
+                  type="checkbox"
+                  className='checkbox'
+                  checked={todo.complete}
+                  onChange={() => handleComplete(todo.id)}
+                />
+                <span
+                  className={`todo-text ${todo.complete ? 'completed' : ''}`}
+                >
+                  {todo.text} ({todo.category})
+                </span>
+              </div>
+
+              <div className="copy-delete">
+                <span
+                  className="copy-button"
+                  onClick={() => handleCopy(todo.text)}
+                >
+                  <img src={paste} alt="" />
+                </span>
+                <span
+                  className="delete-button"
+                  onClick={() => handleDelete(todo.id)}
+                >
+                  <img src={remove} alt="" />
+                </span>
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };
