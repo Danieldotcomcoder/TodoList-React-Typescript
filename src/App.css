@@ -8,7 +8,8 @@
 .header h1 {
     color: var(--light, #FFF);
     font-family: Racing Sans One;
-    font-size: 64px;
+    font-size: 70px;
+    line-height: 24px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -24,12 +25,11 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 18px;
     margin-top: 2%;
-    border: 1px solid transparent;
-    box-shadow: 1px 1px 1px 1px white;
+    box-shadow: 2px 2px 2px 2px rgb(78, 78, 78);
     border-radius: 20px;
     box-sizing: border-box;
+    background-image: linear-gradient(to right, #94989d, #7e94b1, #6690c5, #488bd8, #1285eb);
 }
-
 
 .todo-item-details {
     width: 85%;
@@ -38,11 +38,12 @@
     align-items: center;
 }
 
-.checkbox{
+.checkbox {
     height: 20px;
     width: 20px;
     background-color: #eee;
     cursor: pointer;
+    margin-left: 2%;
 }
 
 .todo-text {
@@ -90,9 +91,6 @@
     width: 100px;
 }
 
-
-
-
 .todo-text.completed {
     text-decoration: line-through;
 }
@@ -116,4 +114,37 @@
 .delete-button img {
     width: 30px;
     cursor: pointer;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1076px) {
+    .app {
+        width: 75%;
+    }
+
+}
+
+@media only screen and (max-width: 768px) {
+    .app {
+        width: 85%;
+    }
+
+    .header h1 {
+        font-size: 40px;
+    }
+
+    .copy-button img {
+        width: 15px;
+    }
+
+    .delete-button img {
+        width: 15px;
+    }
+
+    .todo-item {
+        font-size: 14px;
+    }
+
+    .checkbox {
+        width: 15px;
+    }
 }
