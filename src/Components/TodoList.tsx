@@ -97,7 +97,7 @@ const TodoList: React.FC = () => {
   return (
     <div className="app">
       <div className="header">
-        <h1>TODO List</h1>
+        <h1>Todo List</h1>
       </div>
       <div className='info'>{info}</div>
       <input

@@ -6,8 +6,8 @@
 }
 
 .header h1 {
-    color: var(--light, #FFF);
-    font-family: Racing Sans One;
+    color:#6a01b1;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 70px;
     line-height: 24px;
     font-style: normal;
@@ -97,7 +97,7 @@
 }
 
 .copy-delete {
-    width: 15%;
+    width: 10%;
     display: flex;
     justify-content: space-between;
     margin-right: 2%;
@@ -158,6 +158,7 @@
 
     .todo-item {
         font-size: 14px;
+        margin-top: 5%;
     }
 
     .checkbox {
