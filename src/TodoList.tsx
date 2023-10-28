@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import copy from 'clipboard-copy';
 import { v4 as uuidv4 } from 'uuid';
-import paste from './assets/paste.png'
-import remove from './assets/delete.png'
+import paste from './assets/paste.png';
+import remove from './assets/delete.png';
 
 import './App.css';
 
@@ -18,18 +18,34 @@ const TodoList: React.FC = () => {
   const [category, setCategory] = useState('Normal');
   const [searchValue, setSearchValue] = useState('');
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
 
-  const categories = ['Normal', 'Home', 'Work', 'Learning', 'Personal', 'Urgent'];
+  const categories = [
+    'Normal',
+    'Home',
+    'Work',
+    'Learning',
+    'Personal',
+    'Urgent',
+  ];
 
   const addTodo: (text: string, category: string) => void = (
     text,
     category
   ) => {
-    const newTodos = [
-      ...todos,
-      { id: uuidv4(), text, category, complete: false },
-    ];
-    setTodos(newTodos);
+    if (text) {
+      const newTodos = [
+        ...todos,
+        { id: uuidv4(), text, category, complete: false },
+      ];
+      setTodos(newTodos);
+    } else {
+      setError('Todo cant be empty');
+      setTimeout(() => {
+        setError('');
+      }, 2000);
+    }
   };
 
   const handleSubmit: (event: React.FormEvent) => void = (event) => {
@@ -41,6 +57,10 @@ const TodoList: React.FC = () => {
 
   const handleCopy: (text: string) => void = (text) => {
     copy(text);
+    setInfo('Copied To Clipboard');
+    setTimeout(() => {
+      setInfo('');
+    }, 1000);
   };
 
   const saveTodos = (todos: Todo[]) => {
@@ -80,6 +100,7 @@ const TodoList: React.FC = () => {
       <div className="header">
         <h1>TODO List</h1>
       </div>
+      <div className='info'>{info}</div>
       <input
         className="search-input"
         type="text"
@@ -99,13 +120,12 @@ const TodoList: React.FC = () => {
             Add
           </button>
         </div>
+        <div className="error">{error}</div>
 
-       
         <select
           id="category"
           className="select-category"
           value={category}
-          
           onChange={(e) => setCategory(e.target.value)}
         >
           <option>Select Category</option>
@@ -118,13 +138,15 @@ const TodoList: React.FC = () => {
       </form>
       <div>
         {todos
-          .filter((todo) => todo.text.toLowerCase().includes(searchValue.toLowerCase()))
+          .filter((todo) =>
+            todo.text.toLowerCase().includes(searchValue.toLowerCase())
+          )
           .map((todo) => (
             <div key={todo.id} className="todo-item">
-              <div className='todo-item-details'>
+              <div className="todo-item-details">
                 <input
                   type="checkbox"
-                  className='checkbox'
+                  className="checkbox"
                   checked={todo.complete}
                   onChange={() => handleComplete(todo.id)}
                 />
@@ -149,8 +171,11 @@ const TodoList: React.FC = () => {
                   <img src={remove} alt="" />
                 </span>
               </div>
+              
             </div>
+            
           ))}
+          
       </div>
     </div>
   );
