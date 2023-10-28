@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import copy from 'clipboard-copy';
 import { v4 as uuidv4 } from 'uuid';
-import paste from './assets/paste.png';
-import remove from './assets/delete.png';
-
-import './App.css';
+import paste from '../assets/paste.png';
+import remove from '../assets/delete.png';
+import '../Styling/App.css';
 
 type Todo = {
   id: string;
