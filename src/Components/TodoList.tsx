@@ -141,13 +141,14 @@ const TodoList: React.FC = () => {
             todo.text.toLowerCase().includes(searchValue.toLowerCase())
           )
           .map((todo) => (
-            <div key={todo.id} className="todo-item">
+            <div key={todo.id} className="todo-item" ata-testid={todo.id === 'test-todo' ? 'test-todo-item' : `todo-item-${todo.id}`}>
               <div className="todo-item-details">
                 <input
                   type="checkbox"
                   className="checkbox"
                   checked={todo.complete}
                   onChange={() => handleComplete(todo.id)}
+                  alt='checkbox'
                 />
                 <span
                   className={`todo-text ${todo.complete ? 'completed' : ''}`}
@@ -161,13 +162,13 @@ const TodoList: React.FC = () => {
                   className="copy-button"
                   onClick={() => handleCopy(todo.text)}
                 >
-                  <img src={paste} alt="" />
+                  <img src={paste} alt="copy" />
                 </span>
                 <span
                   className="delete-button"
                   onClick={() => handleDelete(todo.id)}
                 >
-                  <img src={remove} alt="" />
+                  <img src={remove} alt="Delete" />
                 </span>
               </div>
               

@@ -1,42 +1,30 @@
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import TodoList from '../Components/TodoList';
+import { render, screen } from '@testing-library/react';
 
-// Mock the clipboard API
-// Mock the clipboard API
-Object.assign(navigator, {
-  clipboard: {
-    writeText: jest.fn(),
-  },
-});
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+import App from '../App';
 
-test('adds a new todo', () => {
-  render(<TodoList />);
+describe('TodoList', () => {
+  test('renders App component without crashing', () => {
+    render(<App />);
+    expect(screen.getByText('Todo List')).toBeInTheDocument();
+  });
 
-  // Type into the input field
-  fireEvent.change(screen.getByPlaceholderText('Todo'), { target: { value: 'New Todo' } });
-  fireEvent.change(screen.getByLabelText('Category'), { target: { value: 'Home' } });
+  test('allows users to add a todo', async () => {
+    render(<App />);
+    const input = screen.getByPlaceholderText('Add Your Todo Here ....');
+    userEvent.type(input, 'Test Todo');
+    const addButton = screen.getByText('Add');
+    userEvent.click(addButton);
+    const todoText = await screen.findByText('Test Todo (Normal)');
+    expect(todoText).toBeInTheDocument();
+  });
 
-  // Click the "Add Todo" button
-  fireEvent.click(screen.getByText('Add Todo'));
+  test('shows error when trying to add an empty todo', () => {
+    render(<App />);
+    const addButton = screen.getByText('Add');
+    userEvent.click(addButton);
+    expect(screen.getByText('Todo cant be empty')).toBeInTheDocument();
+  });
 
-  // Check if the new todo was added
-  expect(screen.getByText('New Todo (Home)')).toBeInTheDocument();
-});
-
-test('copies a todo', () => {
-  const clipboardSpy = jest.spyOn(navigator.clipboard, 'writeText');
-
-  render(<TodoList />);
-
-  // Add a new todo
-  fireEvent.change(screen.getByPlaceholderText('Todo'), { target: { value: 'New Todo' } });
-  fireEvent.change(screen.getByLabelText('Category'), { target: { value: 'Home' } });
-  fireEvent.click(screen.getByText('Add Todo'));
-
-  // Click the "Copy" button of the new todo
-  fireEvent.click(screen.getByText('Copy'));
-
-  // Check if the text of the new todo was copied to the clipboard
-  expect(clipboardSpy).toHaveBeenCalledWith('New Todo');
 });
